@@ -52,6 +52,9 @@ __ATOMIC_INLINE__ int __atomic_inc(volatile int *ptr) { return __sync_fetch_and_
 // returns 1 if exchange took place
 inline bool HxAtomicExchangeIf(int inTest, int inNewVal,volatile int *ioWhere)
    { return !__atomic_cmpxchg(inTest, inNewVal, ioWhere); }
+inline bool HxAtomicExchangeIfPtr(void *inTest, void *inNewVal,void * volatile *ioWhere)
+   { return __sync_val_compare_and_swap(ioWhere, inTest, inNewVal)==inTest; }
+
 // Returns old value naturally
 inline int HxAtomicInc(volatile int *ioWhere)
    { return __atomic_inc(ioWhere); }
@@ -62,6 +65,10 @@ inline int HxAtomicDec(volatile int *ioWhere)
 
 inline bool HxAtomicExchangeIf(int inTest, int inNewVal,volatile int *ioWhere)
    { return InterlockedCompareExchange((volatile LONG *)ioWhere, inNewVal, inTest)==inTest; }
+
+inline bool HxAtomicExchangeIfPtr(void *inTest, void *inNewVal,void *volatile *ioWhere)
+   { return InterlockedCompareExchangePointer(ioWhere, inNewVal, inTest)==inTest; }
+
 // Make it return old value
 inline int HxAtomicInc(volatile int *ioWhere)
    { return InterlockedIncrement((volatile LONG *)ioWhere)-1; }
@@ -77,6 +84,8 @@ inline int HxAtomicDec(volatile int *ioWhere)
 
 inline bool HxAtomicExchangeIf(int inTest, int inNewVal,volatile int *ioWhere)
    { return OSAtomicCompareAndSwap32Barrier(inTest, inNewVal, ioWhere); }
+inline bool HxAtomicExchangeIfPtr(void *inTest, void *inNewVal,void * volatile *ioWhere)
+   { return OSAtomicCompareAndSwapPtrBarrier(inTest, inNewVal, ioWhere); }
 inline int HxAtomicInc(volatile int *ioWhere)
    { return OSAtomicIncrement32Barrier(ioWhere)-1; }
 inline int HxAtomicDec(volatile int *ioWhere)
@@ -89,6 +98,8 @@ inline int HxAtomicDec(volatile int *ioWhere)
 
 inline bool HxAtomicExchangeIf(int inTest, int inNewVal,volatile int *ioWhere)
    { return __sync_bool_compare_and_swap(ioWhere, inTest, inNewVal); }
+inline bool HxAtomicExchangeIfPtr(void *inTest, void *inNewVal,void *volatile *ioWhere)
+   { return __sync_bool_compare_and_swap(ioWhere, inTest, inNewVal); }
 // Returns old value naturally
 inline int HxAtomicInc(volatile int *ioWhere)
    { return __sync_fetch_and_add(ioWhere,1); }
@@ -98,6 +109,17 @@ inline int HxAtomicDec(volatile int *ioWhere)
 #else
 
 #define HX_HAS_ATOMIC 0
+
+inline bool HxAtomicExchangeIfPtr(void *inTest, void *inNewVal,void *volatile *ioWhere)
+{
+   if (*ioWhere == inTest)
+   {
+      *ioWhere = inNewVal;
+      return true;
+   }
+   return false;
+}
+
 
 inline int HxAtomicExchangeIf(int inTest, int inNewVal,volatile int *ioWhere)
 {
@@ -116,6 +138,10 @@ inline int HxAtomicDec(volatile int *ioWhere)
 
 #endif
 
+inline bool HxAtomicExchangeIfCastPtr(void *inTest, void *inNewVal,void *ioWhere)
+{
+   return HxAtomicExchangeIfPtr(inTest, inNewVal, (void *volatile *)ioWhere);
+}
 
 
 #if defined(HX_WINDOWS)

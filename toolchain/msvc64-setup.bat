@@ -8,6 +8,10 @@ setlocal enabledelayedexpansion
 		@echo HXCPP_VARS
 		@set
 	)
+) else if exist "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\Tools\VsDevCmd.bat" (
+	@call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\Tools\VsDevCmd.bat" -arch=amd64 -app_platform=Desktop -no_logo
+	@echo HXCPP_VARS
+	@set
 ) else if exist "%VS140COMNTOOLS%\..\..\VC\bin\x86_amd64\vcvarsx86_amd64.bat" (
 	@echo "%VS140COMNTOOLS%"
 	@call "%VS140COMNTOOLS%\..\..\VC\bin\x86_amd64\vcvarsx86_amd64.bat"
@@ -25,5 +29,5 @@ setlocal enabledelayedexpansion
 	@echo HXCPP_VARS
 	@set
 ) else (
-	echo Error: 64bit is not autmatically supported for this version of VC. Set HXCPP_MSVC_CUSTOM and manually configure the executable, library and include paths
+	echo Error: 64bit is not automatically supported for this version of VC. Set HXCPP_MSVC_CUSTOM and manually configure the executable, library and include paths
 )

@@ -37,6 +37,28 @@ class RunTests
       command("bin" + sep + "TestMain-debug",[]);
    }
 
+   public static function runTelemetry()
+   {
+      setDir("telemetry");
+
+      // Telemetry should work in debug and non-debug modes
+      // TODO: do we need m64Def?
+      command("haxe", ["compile.hxml", "-debug"].concat(cppAst) );
+      command("bin" + sep + "TestMain-debug",[]);
+
+      command("haxe", ["compile.hxml"].concat(cppAst) );
+      command("bin" + sep + "TestMain",[]);
+
+   }
+
+
+   public static function debugger()
+   {
+      setDir("debugger");
+
+      command("haxe", ["compile.hxml"] );
+      command("bin" + sep + "App-debug",[]);
+   }
 
    public static function opMatrix()
    {
@@ -159,9 +181,11 @@ class RunTests
       run("cffi", cffi);
       run("opMatrix", opMatrix);
       run("haxe", runHaxe);
+      run("telemetry", runTelemetry);
       run("std32", std32);
       run("std64", std64);
       run("native", native);
+      run("debugger", debugger);
 
       Sys.println("");
 

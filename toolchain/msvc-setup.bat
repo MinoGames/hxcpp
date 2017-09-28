@@ -1,6 +1,14 @@
 setlocal enabledelayedexpansion
-@if exist "%HXCPP_MSVC%\vsvars32.bat" (
+@if exist "%HXCPP_MSVC%\vcvars32.bat" (
+	@call "%HXCPP_MSVC%\vcvars32.bat"
+	@echo HXCPP_VARS
+	@set
+) else if exist "%HXCPP_MSVC%\vsvars32.bat" (
 	@call "%HXCPP_MSVC%\vsvars32.bat"
+	@echo HXCPP_VARS
+	@set
+) else if exist "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\Tools\VsDevCmd.bat" (
+	@call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\Tools\VsDevCmd.bat" -arch=x86 -app_platform=Desktop -no_logo
 	@echo HXCPP_VARS
 	@set
 ) else if exist "%VS140COMNTOOLS%\vsvars32.bat" (

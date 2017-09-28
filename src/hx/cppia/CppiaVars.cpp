@@ -65,7 +65,7 @@ void CppiaVar::clear()
    boolVal = 0;
    intVal = 0;
    floatVal = 0;
-   stringVal = 0;
+   stringVal = String();
    valPointer = 0;
    storeType = fsUnknown;
    dynamicFunction = 0;
@@ -113,6 +113,11 @@ void CppiaVar::linkVarTypes(CppiaModule &cppia)
             throw "Unkown store type";
       }
    }
+}
+
+bool CppiaVar::hasPointer()
+{
+   return storeType==fsString || storeType==fsObject;
 }
 
 
@@ -531,6 +536,10 @@ void CppiaStackVar::setDefault(CppiaCtx *inCxt, const CppiaConst &inDefault)
                      d =  module->strings[ inDefault.ival ];
                }
                break;
+            case fsString:
+            case fsUnknown:
+               break; // handled above, or not needed
+ 
          }
       }
    }
@@ -569,10 +578,10 @@ void CppiaStackVar::genDefault(CppiaCompiler *compiler, const CppiaConst &inDefa
    {
       if (inDefault.type == CppiaConst::cString)
       {
-         JumpId notNull = compiler->compare(cmpP_NOT_ZERO, JitFramePos(defaultStackPos+4).as(jtPointer),(void *)0);
+         JumpId notNull = compiler->compare(cmpP_NOT_ZERO, JitFramePos(defaultStackPos+offsetof(String,__s)).as(jtPointer),(void *)0);
          String val = module->strings[ inDefault.ival ];
          compiler->move(JitFramePos(defaultStackPos).as(jtInt), (int)val.length);
-         compiler->move(JitFramePos(defaultStackPos+4).as(jtPointer), (void *)val.__s);
+         compiler->move(JitFramePos(defaultStackPos+offsetof(String,__s)).as(jtPointer), (void *)val.__s);
          compiler->comeFrom(notNull);
       }
    }
@@ -608,6 +617,9 @@ void CppiaStackVar::genDefault(CppiaCompiler *compiler, const CppiaConst &inDefa
                break;
             compiler->move(destPos.as(jtPointer), sJitReturnReg.as(jtPointer));
             break;
+         case fsString: // handled
+         case fsUnknown: // ?
+            break;
       }
 
       JumpId defaultDone = compiler->jump();
@@ -632,6 +644,9 @@ void CppiaStackVar::genDefault(CppiaCompiler *compiler, const CppiaConst &inDefa
          case fsObject:
             // Should be same pos
             //compiler->move(destPos.as(jtPointer), sJitTemp0.as(jtPointer));
+            break;
+         case fsString: // handled
+         case fsUnknown: // ?
             break;
       }
 

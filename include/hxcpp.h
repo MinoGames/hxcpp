@@ -35,6 +35,10 @@
   #include <cstdlib>
 #endif
 
+#if defined(EMSCRIPTEN)
+  #include <emscripten.h>
+#endif
+
 #ifdef __OBJC__
 #ifdef HXCPP_OBJC
   #import <Foundation/Foundation.h>
@@ -58,6 +62,11 @@
    #define HXCPP_ALIGN_FLOAT
 #endif
 
+// Must allign allocs to 8 bytes to match floating point requirement?
+// Ints must br read on 4-byte boundary
+#ifdef EMSCRIPTEN
+   #define HXCPP_ALIGN_ALLOC
+#endif
 
 
 
@@ -267,6 +276,7 @@ namespace hx
 {
 class MarkContext;
 
+
 class VisitContext
 {
 public:
@@ -280,7 +290,11 @@ typedef ::cpp::Variant Val;
 typedef ::Dynamic Val;
 #endif
 
-//#define HXCPP_GC_NURSERY
+#ifdef HXCPP_GC_GENERATIONAL
+  #define HXCPP_GC_NURSERY
+#endif
+
+
 //#define HXCPP_COMBINE_STRINGS
 
 #if (HXCPP_API_LEVEL >= 313)
