@@ -66,6 +66,17 @@ enum { gAlwaysMove = false };
 namespace {
 void DebuggerTrap()
 {
+   // JD: Trying somehting here, keep getting crash from this
+   // Which is probably mega usefull while debugging but seems it could "crash"
+   // the device when it coudl have just ignored it...
+   // Only disabling for android for now
+   
+   #ifdef ANDROID
+   
+   // NOPE!!!! 
+
+   #else
+   
    static bool triggeredOnce = false;
 
    if (!triggeredOnce)
@@ -78,6 +89,8 @@ void DebuggerTrap()
       *(int *)0=0;
       #endif
    }
+
+   #endif
 }
 }
 
