@@ -1,6 +1,6 @@
 <xml>
 
-<!-- Android TOOLS -------------------------------------->
+<!-- Android TOOLS -->
 <!--
   Configure build via variables, otherwise defaults will be used:
      Set the path to the exact ndk to use with ANDROID_NDK_ROOT,
@@ -72,7 +72,7 @@
   <exe name="${prebuiltBaseLLVM}/bin/clang++" if="HXCPP_CLANG" />
 
   <!-- These must appear in this order! -->
-  <flag value="--sysroot=${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}"/>
+  <flag value="--sysroot=${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}" unless="HXCPP_CLANG"/>
   <section unless="HXCPP_CLANG">
     <section if="NDKV8+">
       <flag value="-I${ANDROID_NDK_ROOT}/sources/cxx-stl/gnu-libstdc++/${TOOLCHAIN_VERSION}/include" />
@@ -84,13 +84,9 @@
     </section>
   </section>  
   <section if="HXCPP_CLANG">
+    <flag value="--sysroot=${ANDROID_NDK_ROOT}/sysroot"/>
     <flag value="-I${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/lib/${ABI}/include" />
     <flag value="-I${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/include" />
-    <!-- 
-    <flag value="--sysroot=${ANDROID_NDK_ROOT}/sysroot"/>
-    <flag value="-I${ANDROID_NDK_ROOT}/sysroot/usr/include/android" />
-    <flag value="-I${ANDROID_NDK_ROOT}/sources/android/support/include" />
-    -->
     <flag value="-I${ANDROID_NDK_ROOT}/sysroot/usr/include" />
     <flag value="-I${ANDROID_NDK_ROOT}/sysroot/usr/include/${EXEPREFIX}" />
     <flag value="-DANDROID_TOOLCHAIN=clang" />
@@ -180,7 +176,7 @@
 <linker id="dll" exe="g++" >
 
   <exe name="${EXEPREFIX}-g++" unless="HXCPP_CLANG" />
-  <exe name="${prebuiltBaseLLVM}/bin/clang++.exe" if="HXCPP_CLANG" />
+  <exe name="${prebuiltBaseLLVM}/bin/clang++" if="HXCPP_CLANG" />
 
   <!--  <flag value="-fuse-ld=lld" if="HXCPP_CLANG"/>  -->
   <flag value="-fuse-ld=${prebuiltBase}/bin/${EXEPREFIX}-ld.gold" if="HXCPP_CLANG"/>
@@ -197,7 +193,7 @@
   <flag value="-std=c++11" if="HXCPP_CPP11"/>
   <flag value="-m32" if="HXCPP_CLANG HXCPP_X86"/>
   <flag value="-Wl,-shared,-Bsymbolic" unless="HXCPP_CLANG"/>
-  <flag value="-Wl,-Bsymbolic" if="HXCPP_CLANG"/>
+  <flag value="-Wl,-shared,-Bsymbolic" if="HXCPP_CLANG"/>
   <section if="HXCPP_OPTIMIZE_FOR_SIZE || HXCPP_GC_SECTIONS" unless="debug">
     <flag value="-Wl,--gc-sections" />
   </section>
@@ -256,8 +252,8 @@
     <lib name="${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/libs/${ABI}/libc++_shared.so"/>
     <!--   
     <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/libstdc++.so"/>
-    <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/libm.so"/>
     -->
+    <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/libm.so"/>
     <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/liblog.so"/>
 
     <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/crtend_android.o"/>
@@ -266,6 +262,8 @@
     <lib name="-lstdc++" if="HXCPP_CLANG"/>
     <lib name="-lc" if="HXCPP_CLANG"/>
     <lib name="-lm" if="HXCPP_CLANG"/>
+    <lib name="-lc++_shared" if="HXCPP_CLANG" />
+    <lib name="-landroid_support" if="HXCPP_CLANGz" />
     <lib name="-llog"/>
     <lib name="-ldl"/>
 
@@ -301,6 +299,8 @@
   <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/libc.so"/>
   <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/libm.so"/>
   <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/crtend_android.o"/>
+  <lib name="-lc++_shared" if="HXCPP_CLANG" />
+  <lib name="-landroid_support" if="HXCPP_CLANGz" />
   <lib name="-llog"/>
   <lib name="-ldl"/>
 </linker>
