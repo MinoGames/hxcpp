@@ -7,6 +7,8 @@
 <set name="ARCH" value ="-v7s" if="HXCPP_ARMV7S" />
 <set name="ARCH" value ="-64" if="HXCPP_ARM64" />
 
+<set name="HXCPP_CPP11" value ="1" />
+
 <set name="HXCPP_USE_LIBTOOL" value="1" />
 <set name="HXCPP_LIBTOOL" value="xcrun --sdk iphoneos${IPHONE_VER} libtool" />
 <include name="toolchain/gcc-toolchain.xml"/>
