@@ -30,8 +30,7 @@
   <set name="TOOLCHAIN" value="x86-${TOOLCHAIN_VERSION}" unless="HXCPP_CLANG" />
   <set name="TRIPLE" value="i686-linux-android" />
   <set name="EXEPREFIX" value="${TRIPLE}" />
-  <set name="ANDROID_API" value="16" if="NDKV18+" unless="ANDROID_API" />
-  <set name="ANDROID_API" value="14" unless="ANDROID_API" />
+  <set name="ANDROID_API" value="21" unless="ANDROID_API" />
   <set name="PLATFORM" value="android-${ANDROID_API}" unless="PLATFORM" />
   <set name="TARGET" value="x86-none-linux-android" if="HXCPP_CLANG" />
 </section>
@@ -44,9 +43,7 @@
   <set name="TOOLCHAIN" value="arm-linux-androideabi-${TOOLCHAIN_VERSION}" unless="HXCPP_CLANG" />
   <set name="TRIPLE" value="arm-linux-androideabi" />
   <set name="EXEPREFIX" value="${TRIPLE}" />
-  <set name="ANDROID_API" value="5" unless="NDKV16+ || ANDROID_API" />
-  <set name="ANDROID_API" value="16" if="NDKV18+" unless="ANDROID_API" />
-  <set name="ANDROID_API" value="14" unless="ANDROID_API" />
+  <set name="ANDROID_API" value="21" unless="ANDROID_API" />
   <set name="PLATFORM" value="android-${ANDROID_API}" unless="PLATFORM" />
   <set name="TARGET" value="armv7-none-linux-androideabi" if="HXCPP_CLANG" />
 </section>
@@ -59,7 +56,7 @@
   <set name="TOOLCHAIN" value="aarch64-linux-android-${TOOLCHAIN_VERSION}" unless="HXCPP_CLANG" />
   <set name="TRIPLE" value="aarch64-linux-android" />
   <set name="EXEPREFIX" value="${TRIPLE}" />
-  <set name="ANDROID_API" value="19" unless="ANDROID_API" />
+  <set name="ANDROID_API" value="21" unless="ANDROID_API" />
   <set name="PLATFORM" value="android-${ANDROID_API}" unless="PLATFORM" />
   <set name="TARGET" value="aarch64-none-linux-android" if="HXCPP_CLANG" />
 </section>
@@ -102,6 +99,7 @@
   <flag value="-I${HXCPP}/include"/>
   <flag value="-Iinclude"/>
   <flag value="-fpic" unless="HXCPP_CLANG HXCPP_X86"/>
+  <flag value="-fno-integrated-as"/>
   <flag value="-fvisibility=hidden"/>
   <flag value="-ffunction-sections"/>
   <flag value="-funwind-tables"/>
@@ -142,7 +140,6 @@
   <section if="HXCPP_X86">
     <flag value="-DANDROID_X86"/>
   </section>
-
 
   <flag value="-fomit-frame-pointer"/>
   <flag value="-fexceptions"/>
