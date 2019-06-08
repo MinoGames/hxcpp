@@ -38,7 +38,7 @@ __sighandler_t bsd_signal(int s, __sighandler_t f)
 // These functions are inlined prior to android-ndk-platform-21, which means they
 // are missing from the libc functions on those phones, and you will get link errors.
 
-#if (HXCPP_ANDROID_PLATFORM>=21) && !defined(HXCPP_ARM64) && !defined(HXCPP_ARMV7)
+#if (HXCPP_ANDROID_PLATFORM>=21) && !defined(HXCPP_ARM64) && !defined(HXCPP_ARMV7) && !defined(HXCPP_X86)
 extern "C" {
 
 
