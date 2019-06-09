@@ -99,7 +99,7 @@
   <flag value="-I${HXCPP}/include"/>
   <flag value="-Iinclude"/>
   <flag value="-fpic" unless="HXCPP_CLANG HXCPP_X86"/>
-  <flag value="-fno-integrated-as"/>
+  <flag value="-fno-integrated-as" if="HXCPP_CLANG"/>
   <flag value="-fvisibility=hidden"/>
   <flag value="-ffunction-sections"/>
   <flag value="-funwind-tables"/>
