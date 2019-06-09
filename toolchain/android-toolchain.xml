@@ -1,6 +1,6 @@
 <xml>
 
-<!-- Android TOOLS -------------------------------------->
+<!-- Android TOOLS -->
 <!--
   Configure build via variables, otherwise defaults will be used:
      Set the path to the exact ndk to use with ANDROID_NDK_ROOT,
@@ -30,8 +30,7 @@
   <set name="TOOLCHAIN" value="x86-${TOOLCHAIN_VERSION}" unless="HXCPP_CLANG" />
   <set name="TRIPLE" value="i686-linux-android" />
   <set name="EXEPREFIX" value="${TRIPLE}" />
-  <set name="ANDROID_API" value="16" if="NDKV18+" unless="ANDROID_API" />
-  <set name="ANDROID_API" value="14" unless="ANDROID_API" />
+  <set name="ANDROID_API" value="21" unless="ANDROID_API" />
   <set name="PLATFORM" value="android-${ANDROID_API}" unless="PLATFORM" />
   <set name="TARGET" value="x86-none-linux-android" if="HXCPP_CLANG" />
 </section>
@@ -44,9 +43,7 @@
   <set name="TOOLCHAIN" value="arm-linux-androideabi-${TOOLCHAIN_VERSION}" unless="HXCPP_CLANG" />
   <set name="TRIPLE" value="arm-linux-androideabi" />
   <set name="EXEPREFIX" value="${TRIPLE}" />
-  <set name="ANDROID_API" value="5" unless="NDKV16+ || ANDROID_API" />
-  <set name="ANDROID_API" value="16" if="NDKV18+" unless="ANDROID_API" />
-  <set name="ANDROID_API" value="14" unless="ANDROID_API" />
+  <set name="ANDROID_API" value="21" unless="ANDROID_API" />
   <set name="PLATFORM" value="android-${ANDROID_API}" unless="PLATFORM" />
   <set name="TARGET" value="armv7-none-linux-androideabi" if="HXCPP_CLANG" />
 </section>
@@ -59,7 +56,7 @@
   <set name="TOOLCHAIN" value="aarch64-linux-android-${TOOLCHAIN_VERSION}" unless="HXCPP_CLANG" />
   <set name="TRIPLE" value="aarch64-linux-android" />
   <set name="EXEPREFIX" value="${TRIPLE}" />
-  <set name="ANDROID_API" value="19" unless="ANDROID_API" />
+  <set name="ANDROID_API" value="21" unless="ANDROID_API" />
   <set name="PLATFORM" value="android-${ANDROID_API}" unless="PLATFORM" />
   <set name="TARGET" value="aarch64-none-linux-android" if="HXCPP_CLANG" />
 </section>
@@ -75,7 +72,7 @@
 <compiler id="android-gcc" exe="g++">
 
   <exe name="${EXEPREFIX}-g++" unless="HXCPP_CLANG" />
-  <exe name="clang++" if="HXCPP_CLANG" />
+  <exe name="${prebuiltBase}/bin/clang++" if="HXCPP_CLANG" />
 
   <!-- These must appear in this order! -->
   <flag value="--sysroot=${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}" unless="HXCPP_CLANG"/>
@@ -102,6 +99,7 @@
   <flag value="-I${HXCPP}/include"/>
   <flag value="-Iinclude"/>
   <flag value="-fpic" unless="HXCPP_CLANG HXCPP_X86"/>
+  <flag value="-fno-integrated-as" if="HXCPP_CLANG"/>
   <flag value="-fvisibility=hidden"/>
   <flag value="-ffunction-sections"/>
   <flag value="-funwind-tables"/>
@@ -143,7 +141,6 @@
     <flag value="-DANDROID_X86"/>
   </section>
 
-
   <flag value="-fomit-frame-pointer"/>
   <flag value="-fexceptions"/>
   <flag value="-fno-strict-aliasing"/>
@@ -176,15 +173,15 @@
 <linker id="dll" exe="g++" >
 
   <exe name="${EXEPREFIX}-g++" unless="HXCPP_CLANG" />
-  <exe name="clang++" if="HXCPP_CLANG" />
+  <exe name="${prebuiltBase}/bin/clang++" if="HXCPP_CLANG" />
 
   <ext value=".so"/>
   <outflag value="-o"/>
   <prefix value="lib"/>
 
   <flag value="-frtti"/>
-  <flag value="-nostdlib" unless="HXCPP_CLANG" />
-  <flag value="-nostdlib++" if="HXCPP_CLANG" />
+  <flag value="-nostdlib"/>
+
   <flag value="--target=${TRIPLE}" if="HXCPP_CLANG" />
   <!-- <flag value="-stdlib=libc++" if="HXCPP_CLANG" /> -->
   <flag value="-std=c++11" if="HXCPP_CPP11"/>
@@ -199,7 +196,6 @@
   <flag value="-Wl,--unresolved-symbols=ignore-in-object-files" if="dll_import" />
   <flag value="-Wl,-z,noexecstack"/>
   <flag value="--sysroot=${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}"/>
-  <!-- <flag value="--sysroot=${ANDROID_NDK_ROOT}/sysroot" if="HXCPP_CLANG"/> -->
   <flag value="-L${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib"/>
   <flag value="-L${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/libs/${STL_NAME}" if="HXCPP_CLANG" />
 
@@ -207,13 +203,18 @@
   <lib name="${ANDROID_NDK_ROOT}/sources/cxx-stl/gnu-libstdc++/libs/${ABI}/libgnustl_static.a" if="NDKV7" unless="HXCPP_CLANG || dll_import" />
   <lib name="${ANDROID_NDK_ROOT}/sources/cxx-stl/gnu-libstdc++/${TOOLCHAIN_VERSION}/libs/${ABI}/libgnustl_static.a" if="NDKV8+" unless="HXCPP_CLANG || dll_import" />
 
-  <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/crtbegin_so.o" unless="HXCPP_CLANG" />
+  
+  <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/crtbegin_so.o" />
   <lib name="${prebuiltBase}/lib/gcc/${EXEPREFIX}/${TOOLCHAIN_VERSION}/libgcc.a" unless="NDKV12+ || HXCPP_CLANG"/>
-  <lib name="${prebuiltBase}/lib/gcc/${EXEPREFIX}/${TOOLCHAIN_VERSION}.x/libgcc.a" if="NDKV12+" unless="HXCPP_CLANG"/>
+  <lib name="${prebuiltBase}/lib/gcc/${EXEPREFIX}/${TOOLCHAIN_VERSION}.x/libgcc.a" if="NDKV12+"/>
+
   <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/libc.so" unless="HXCPP_CLANG" />
+
   <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/libm.so"/>
+
   <lib name="-lc++_shared" if="HXCPP_CLANG" />
-  <lib name="-landroid_support" if="HXCPP_CLANG" />
+  <lib name="-landroid_support" if="HXCPP_CLANG" unless="HXCPP_ARM64" />
+  <lib name="-lc" if="HXCPP_CLANG"/>
   <lib name="-llog"/>
   <lib name="-ldl"/>
 </linker>
@@ -223,15 +224,15 @@
 <linker id="exe" exe="g++" >
 
   <exe name="${EXEPREFIX}-g++" unless="HXCPP_CLANG" />
-  <exe name="clang++" if="HXCPP_CLANG" />
+  <exe name="${prebuiltBase}/bin/clang++" if="HXCPP_CLANG" />
 
   <ext value=""/>
   <outflag value="-o"/>
   <prefix value=""/>
 
   <flag value="-frtti"/>
-  <flag value="-nostdlib" unless="HXCPP_CLANG" />
-  <flag value="-nostdlib++" if="HXCPP_CLANG" />
+  <flag value="-nostdlib"/>
+
   <flag value="--target=${TRIPLE}" if="HXCPP_CLANG" />
   <!-- <flag value="-stdlib=libc++" if="HXCPP_CLANG" /> -->
   <flag value="-std=c++11" if="HXCPP_CPP11"/>
@@ -239,21 +240,23 @@
   <flag value="-Wl,--unresolved-symbols=ignore-in-object-files" if="dll_import" />
   <flag value="-Wl,-z,noexecstack"/>
   <flag value="--sysroot=${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}"/>
-  <!-- <flag value="--sysroot=${ANDROID_NDK_ROOT}/sysroot" if="HXCPP_CLANG"/> -->
   <flag value="-L${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib"/>
 
   <lib name="${ANDROID_NDK_ROOT}/sources/cxx-stl/gnu-libstdc++/libs/${ABI}/libstdc++.a" if="NDKV6" unless="HXCPP_CLANG dll_import" />
   <lib name="${ANDROID_NDK_ROOT}/sources/cxx-stl/gnu-libstdc++/libs/${ABI}/libgnustl_static.a" if="NDKV7" unless="HXCPP_CLANG dll_import" />
   <lib name="${ANDROID_NDK_ROOT}/sources/cxx-stl/gnu-libstdc++/${TOOLCHAIN_VERSION}/libs/${ABI}/libgnustl_static.a" if="NDKV8+" unless="HXCPP_CLANG dll_import" />
 
-  <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/crtbegin_static.o" unless="HXCPP_CLANG"/>
+  <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/crtbegin_static.o"/>
   <lib name="${prebuiltBase}/lib/gcc/${EXEPREFIX}/${TOOLCHAIN_VERSION}/libgcc.a" unless="NDKV12+ || HXCPP_CLANG" />
-  <lib name="${prebuiltBase}/lib/gcc/${EXEPREFIX}/${TOOLCHAIN_VERSION}.x/libgcc.a" if="NDKV12+" unless="HXCPP_CLANG"/>
+  <lib name="${prebuiltBase}/lib/gcc/${EXEPREFIX}/${TOOLCHAIN_VERSION}.x/libgcc.a" if="NDKV12+"/>
+
   <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/libc.so" unless="HXCPP_CLANG"/>
   <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/libm.so"/>
   <lib name="${ANDROID_NDK_ROOT}/platforms/${PLATFORM}/${PLATFORM_ARCH}/usr/lib/crtend_android.o"/>
+
   <lib name="-lc++_shared" if="HXCPP_CLANG" />
-  <lib name="-landroid_support" if="HXCPP_CLANG" />
+  <lib name="-landroid_support" if="HXCPP_CLANG" unless="HXCPP_ARM64" />
+  <lib name="-lc" if="HXCPP_CLANG"/>
   <lib name="-llog"/>
   <lib name="-ldl"/>
 </linker>

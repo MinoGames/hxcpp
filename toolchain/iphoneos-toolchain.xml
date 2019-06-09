@@ -7,6 +7,8 @@
 <set name="ARCH" value ="-v7s" if="HXCPP_ARMV7S" />
 <set name="ARCH" value ="-64" if="HXCPP_ARM64" />
 
+<set name="HXCPP_CPP11" value ="1" />
+
 <set name="HXCPP_USE_LIBTOOL" value="1" />
 <set name="HXCPP_LIBTOOL" value="xcrun --sdk iphoneos${IPHONE_VER} libtool" />
 <include name="toolchain/gcc-toolchain.xml"/>
@@ -41,7 +43,7 @@
   <flag value="${DEVELOPER_DIR}/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS${IPHONE_VER}.sdk"/>
   <!-- <flag value="-miphoneos-version-min=3.0" if="HXCPP_GCC" unless="HXCPP_ARMV7" />
   <flag value="-miphoneos-version-min=5.0" if="HXCPP_ARMV7" /> -->
-  <flag value="-miphoneos-version-min=5.0" unless="HXCPP_GCC" />
+  <flag value="-miphoneos-version-min=9.0" unless="HXCPP_GCC" />
   <flag value="-fobjc-arc" if="OBJC_ARC" />
   <flag value="-DOBJC_ARC" if="OBJC_ARC" />
   <flag value="-DENABLE_BITCODE=YES"/>
