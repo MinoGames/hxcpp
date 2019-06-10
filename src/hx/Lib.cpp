@@ -521,7 +521,8 @@ void *__hxcpp_get_proc_address(String inLib, String full_name,bool inNdllProc,bo
    #elif defined(IPHONE) || defined(APPLETV)
    gLoadDebug = true;
    setenv("DYLD_PRINT_APIS","1",true);
-
+   #elif defined(HX_ANDROID)
+   gLoadDebug = true;
    #elif !defined(HX_WINRT)
    gLoadDebug = gLoadDebug || getenv("HXCPP_LOAD_DEBUG");
    #endif
@@ -530,8 +531,8 @@ void *__hxcpp_get_proc_address(String inLib, String full_name,bool inNdllProc,bo
    {
       sgLibPathIsInit = true;
       #ifndef HX_WINRT 
-      sgLibPath.push_back("./");
-	  #endif
+      sgLibPath.push_back( HX_CSTRING("./") );
+	   #endif
       #ifdef HX_MACOS
       sgLibPath.push_back("@executable_path/");
       #endif
@@ -543,6 +544,20 @@ void *__hxcpp_get_proc_address(String inLib, String full_name,bool inNdllProc,bo
          hxcpp = FindHaxelib( HX_CSTRING("hxcpp") );
       if (hxcpp.length!=0)
          __hxcpp_push_dll_path(hxcpp+HX_CSTRING("/bin/") + bin + HX_CSTRING("/"));
+      #endif
+
+      #if defined(HX_ANDROID)
+      // Trying something, I'm desperate...
+      __android_log_print(ANDROID_LOG_INFO, "loader", "JD is desperate!!!!");
+      //__hxcpp_push_dll_path(hxcpp+HX_CSTRING("/bin/") + bin + HX_CSTRING("/"));
+      sgLibPath.push_back( HX_CSTRING("/data/app/com.minogames.cats.client-1/lib/arm64/") );
+      sgLibPath.push_back( HX_CSTRING("/data/app/com.minogames.cats.client-1/lib/armv7/") );
+      sgLibPath.push_back( HX_CSTRING("/data/app/com.minogames.cats.client-1/lib/arm/") );
+      sgLibPath.push_back( HX_CSTRING("/data/app/com.minogames.cats.client-1/lib/x86/") );
+      sgLibPath.push_back( HX_CSTRING("/data/app/com.minogames.cats.client-2/lib/arm64/") );
+      sgLibPath.push_back( HX_CSTRING("/data/app/com.minogames.cats.client-2/lib/armv7/") );
+      sgLibPath.push_back( HX_CSTRING("/data/app/com.minogames.cats.client-2/lib/arm/") );
+      sgLibPath.push_back( HX_CSTRING("/data/app/com.minogames.cats.client-2/lib/x86/") );
       #endif
    }
 
