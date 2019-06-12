@@ -531,7 +531,7 @@ void *__hxcpp_get_proc_address(String inLib, String full_name,bool inNdllProc,bo
    {
       sgLibPathIsInit = true;
       #ifndef HX_WINRT 
-      sgLibPath.push_back( HX_CSTRING("./") );
+      sgLibPath.push_back( "./" );
 	   #endif
       #ifdef HX_MACOS
       sgLibPath.push_back("@executable_path/");
@@ -550,14 +550,18 @@ void *__hxcpp_get_proc_address(String inLib, String full_name,bool inNdllProc,bo
       // Trying something, I'm desperate...
       __android_log_print(ANDROID_LOG_INFO, "loader", "JD is desperate!!!!");
       //__hxcpp_push_dll_path(hxcpp+HX_CSTRING("/bin/") + bin + HX_CSTRING("/"));
-      sgLibPath.push_back( HX_CSTRING("/data/app/com.minogames.cats.client-1/lib/arm64/") );
-      sgLibPath.push_back( HX_CSTRING("/data/app/com.minogames.cats.client-1/lib/armv7/") );
-      sgLibPath.push_back( HX_CSTRING("/data/app/com.minogames.cats.client-1/lib/arm/") );
-      sgLibPath.push_back( HX_CSTRING("/data/app/com.minogames.cats.client-1/lib/x86/") );
-      sgLibPath.push_back( HX_CSTRING("/data/app/com.minogames.cats.client-2/lib/arm64/") );
-      sgLibPath.push_back( HX_CSTRING("/data/app/com.minogames.cats.client-2/lib/armv7/") );
-      sgLibPath.push_back( HX_CSTRING("/data/app/com.minogames.cats.client-2/lib/arm/") );
-      sgLibPath.push_back( HX_CSTRING("/data/app/com.minogames.cats.client-2/lib/x86/") );
+      sgLibPath.push_back( "/data/app/com.minogames.cats.client-1/lib/arm64/" );
+      sgLibPath.push_back( "/data/app/com.minogames.cats.client-1/lib/armv7/" );
+      sgLibPath.push_back( "/data/app/com.minogames.cats.client-1/lib/arm/" );
+      sgLibPath.push_back( "/data/app/com.minogames.cats.client-1/lib/x86/" );
+      sgLibPath.push_back( "/data/app/com.minogames.cats.client-2/lib/arm64/" );
+      sgLibPath.push_back( "/data/app/com.minogames.cats.client-2/lib/armv7/" );
+      sgLibPath.push_back( "/data/app/com.minogames.cats.client-2/lib/arm/" );
+      sgLibPath.push_back( "/data/app/com.minogames.cats.client-2/lib/x86/" );
+      sgLibPath.push_back( "./lib/arm64/" );
+      sgLibPath.push_back( "./lib/armv7/" );
+      sgLibPath.push_back( "./lib/arm/" );
+      sgLibPath.push_back( "./lib/x86/" );
       #endif
    }
 
