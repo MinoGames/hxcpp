@@ -261,7 +261,7 @@ static String FindHaxelib(String inLib)
 
    struct stat s;
    if ( (stat(".haxelib",&s)==0 && (s.st_mode & S_IFDIR) ) )
-      haxepath = HX_CSTRING(".haxelib");
+      haxepath = ".haxelib";
    if (loadDebug)
       printf( haxepath.length ? "Found local .haxelib\n" : "No local .haxelib\n");
 
@@ -275,9 +275,9 @@ static String FindHaxelib(String inLib)
    if (haxepath.length==0)
    {
        #ifdef _WIN32
-       String home = GetEnv("HOMEDRIVE") + GetEnv("HOMEPATH") + HX_CSTRING("/.haxelib");
+       String home = GetEnv("HOMEDRIVE") + GetEnv("HOMEPATH") + "/.haxelib";
        #else
-       String home = GetEnv("HOME") + HX_CSTRING("/.haxelib");
+       String home = GetEnv("HOME") + "/.haxelib";
        #endif
        haxepath = GetFileContents(home);
        if (loadDebug)
@@ -291,7 +291,7 @@ static String FindHaxelib(String inLib)
          printf("HAXEPATH env:%s\n", haxepath.__s);
       if (haxepath.length>0)
       {
-         haxepath += HX_CSTRING("/lib");
+         haxepath += "/lib";
       }
    }
 
@@ -300,40 +300,40 @@ static String FindHaxelib(String inLib)
 
    if (haxepath.length==0)
    {
-       haxepath = GetFileContents(HX_CSTRING("/etc/.haxepath"));
+       haxepath = GetFileContents("/etc/.haxepath");
        if (loadDebug) printf("HAXEPATH etc:%s\n", haxepath.__s);
    }
 
    if (haxepath.length==0)
    {
       #ifdef _WIN32
-      haxepath = HX_CSTRING("C:\\HaxeToolkit\\haxe\\lib");
+      haxepath = "C:\\HaxeToolkit\\haxe\\lib";
       #else
-      haxepath = HX_CSTRING("/usr/lib/haxe/lib");
+      haxepath = "/usr/lib/haxe/lib";
       #endif
        if (loadDebug) printf("HAXEPATH default:%s\n", haxepath.__s);
    }
 
-   String dir = haxepath + HX_CSTRING("/") + inLib + HX_CSTRING("/");
+   String dir = haxepath + "/" + inLib + "/";
 
 
-   String dev = dir + HX_CSTRING(".dev");
+   String dev = dir + ".dev";
    String path = GetFileContents(dev);
    if (loadDebug) printf("Read dev location from file :%s, got %s\n", dev.__s, path.__s);
    if (path.length==0)
    {
-      path = GetFileContents(dir + HX_CSTRING(".current"));
+      path = GetFileContents(dir + ".current");
       if (path.length==0)
          return null();
       // Replace "." with "," ...
       String with_commas;
       for(int i=0;i<path.length;i++)
          if (path.getChar(i)=='.')
-            with_commas += HX_CSTRING(",");
+            with_commas += ",";
          else
             with_commas += path.substr(i,1);
 
-      path = dir + with_commas + HX_CSTRING("/");
+      path = dir + with_commas + "/";
    }
 
    return path;
@@ -355,48 +355,48 @@ String __hxcpp_get_bin_dir()
    return
 #if defined(HX_WINRT)
   #ifdef HXCPP_M64
-    HX_CSTRING("WinRT64");
+    "WinRT64";
   #else
-    HX_CSTRING("WinRT");
+    "WinRT";
   #endif
 #elif defined(_WIN32)
   #ifdef HXCPP_M64
-    HX_CSTRING("Windows64");
+    "Windows64";
   #else
-    HX_CSTRING("Windows");
+    "Windows";
   #endif
 // Unix...
 #elif defined(__APPLE__)
   #ifdef HXCPP_M64
-    HX_CSTRING("Mac64");
+    "Mac64";
   #else
-    HX_CSTRING("Mac");
+    "Mac";
   #endif
 #elif defined (ANDROID)
-    HX_CSTRING("Android");
+    "Android";
 #elif defined(WEBOS)
-    HX_CSTRING("webOS");
+    "webOS";
 #elif defined(BLACKBERRY)
-    HX_CSTRING("BlackBerry");
+    "BlackBerry";
 #elif defined(RASPBERRYPI)
-    HX_CSTRING("RPi");
+    "RPi";
 #elif defined(EMSCRIPTEN)
-	HX_CSTRING("Emscripten");
+	"Emscripten";
 #elif defined(TIZEN)
-    HX_CSTRING("Tizen");
+    "Tizen";
 #elif defined(IPHONESIM)
-    HX_CSTRING("IPhoneSim");
+    "IPhoneSim";
 #elif defined(IPHONEOS)
-    HX_CSTRING("IPhoneOs");
+    "IPhoneOs";
 #elif defined(APPLETVSIM)
-    HX_CSTRING("AppleTVSim");
+    "AppleTVSim";
 #elif defined(APPLETVOS)
-    HX_CSTRING("AppleTVOS");
+    "AppleTVOS";
 #else
   #ifdef HXCPP_M64
-    HX_CSTRING("Linux64");
+    "Linux64";
   #else
-    HX_CSTRING("Linux");
+    "Linux";
   #endif
 #endif
 }
@@ -405,21 +405,21 @@ String __hxcpp_get_dll_extension()
 {
    return
 #if defined(_WIN32) || defined(HX_WINRT)
-    HX_CSTRING(".dll");
+    ".dll";
 #elif defined(IPHONEOS)
-    HX_CSTRING(".ios.dylib");
+    ".ios.dylib";
 #elif defined(IPHONESIM)
-    HX_CSTRING(".sim.dylib");
+    ".sim.dylib";
 #elif defined(APPLETVOS)
-    HX_CSTRING(".tvos.dylib");
+    ".tvos.dylib";
 #elif defined(APPLETVSIM)
-    HX_CSTRING(".sim.dylib");
+    ".sim.dylib";
 #elif defined(__APPLE__)
-    HX_CSTRING(".dylib");
+    ".dylib";
 #elif defined(ANDROID) || defined(GPH) || defined(WEBOS)  || defined(BLACKBERRY) || defined(EMSCRIPTEN) || defined(TIZEN)
-    HX_CSTRING(".so");
+    ".so";
 #else
-    HX_CSTRING(".dso");
+    ".dso";
 #endif
 }
 
@@ -427,7 +427,7 @@ void __hxcpp_push_dll_path(String inPath)
 {
    int last = inPath.length-1;
    if (last>=0 && inPath.__s[last]!='\\' && inPath.__s[last]!='/')
-      sgLibPath.push_back( (inPath + HX_CSTRING("/")).__s );
+      sgLibPath.push_back( (inPath + "/").__s );
    else
       sgLibPath.push_back( inPath.__s );
 }
@@ -446,17 +446,17 @@ Dynamic __loadprim(String inLib, String inPrim,int inArgCount)
    String full_name = inPrim;
    switch(inArgCount)
    {
-      case 0: full_name += HX_CSTRING("__0"); break;
-      case 1: full_name += HX_CSTRING("__1"); break;
-      case 2: full_name += HX_CSTRING("__2"); break;
-      case 3: full_name += HX_CSTRING("__3"); break;
-      case 4: full_name += HX_CSTRING("__4"); break;
-      case 5: full_name += HX_CSTRING("__5"); break;
+      case 0: full_name += "__0"; break;
+      case 1: full_name += "__1"; break;
+      case 2: full_name += "__2"; break;
+      case 3: full_name += "__3"; break;
+      case 4: full_name += "__4"; break;
+      case 5: full_name += "__5"; break;
       default:
-          full_name += HX_CSTRING("__MULT");
+          full_name += "__MULT";
    }
 
-   String libString = inLib + HX_CSTRING("_") + full_name;
+   String libString = inLib + "_" + full_name;
    ExternalPrimitive *prim = sLoadedMap[libString];
    if (prim)
       return Dynamic(prim);
@@ -511,7 +511,7 @@ void *__hxcpp_get_proc_address(String inLib, String full_name,bool inNdllProc,bo
 
 
    #ifdef HX_ANDROID
-   String module_name = HX_CSTRING("lib") + inLib;
+   String module_name = "lib" + inLib;
    #else
    String module_name = inLib;
    #endif
@@ -531,7 +531,7 @@ void *__hxcpp_get_proc_address(String inLib, String full_name,bool inNdllProc,bo
    {
       sgLibPathIsInit = true;
       #ifndef HX_WINRT 
-      sgLibPath.push_back( HX_CSTRING("./") );
+      sgLibPath.push_back( "./" );
 	   #endif
       #ifdef HX_MACOS
       sgLibPath.push_back("@executable_path/");
@@ -541,23 +541,23 @@ void *__hxcpp_get_proc_address(String inLib, String full_name,bool inNdllProc,bo
       #ifdef HXCPP_TRY_HAXELIB
       String hxcpp = GetEnv("HXCPP");
       if (hxcpp.length==0)
-         hxcpp = FindHaxelib( HX_CSTRING("hxcpp") );
+         hxcpp = FindHaxelib( "hxcpp" );
       if (hxcpp.length!=0)
-         __hxcpp_push_dll_path(hxcpp+HX_CSTRING("/bin/") + bin + HX_CSTRING("/"));
+         __hxcpp_push_dll_path(hxcpp+"/bin/" + bin + "/");
       #endif
 
       #if defined(HX_ANDROID)
       // Trying something, I'm desperate...
       __android_log_print(ANDROID_LOG_INFO, "loader", "JD is desperate!!!!");
-      //__hxcpp_push_dll_path(hxcpp+HX_CSTRING("/bin/") + bin + HX_CSTRING("/"));
-      sgLibPath.push_back( HX_CSTRING("/data/app/com.minogames.cats.client-1/lib/arm64/") );
-      sgLibPath.push_back( HX_CSTRING("/data/app/com.minogames.cats.client-1/lib/armv7/") );
-      sgLibPath.push_back( HX_CSTRING("/data/app/com.minogames.cats.client-1/lib/arm/") );
-      sgLibPath.push_back( HX_CSTRING("/data/app/com.minogames.cats.client-1/lib/x86/") );
-      sgLibPath.push_back( HX_CSTRING("/data/app/com.minogames.cats.client-2/lib/arm64/") );
-      sgLibPath.push_back( HX_CSTRING("/data/app/com.minogames.cats.client-2/lib/armv7/") );
-      sgLibPath.push_back( HX_CSTRING("/data/app/com.minogames.cats.client-2/lib/arm/") );
-      sgLibPath.push_back( HX_CSTRING("/data/app/com.minogames.cats.client-2/lib/x86/") );
+      //__hxcpp_push_dll_path(hxcpp+"/bin/" + bin + "/");
+      sgLibPath.push_back( "/data/app/com.minogames.cats.client-1/lib/arm64/" );
+      sgLibPath.push_back( "/data/app/com.minogames.cats.client-1/lib/armv7/" );
+      sgLibPath.push_back( "/data/app/com.minogames.cats.client-1/lib/arm/" );
+      sgLibPath.push_back( "/data/app/com.minogames.cats.client-1/lib/x86/" );
+      sgLibPath.push_back( "/data/app/com.minogames.cats.client-2/lib/arm64/" );
+      sgLibPath.push_back( "/data/app/com.minogames.cats.client-2/lib/armv7/" );
+      sgLibPath.push_back( "/data/app/com.minogames.cats.client-2/lib/arm/" );
+      sgLibPath.push_back( "/data/app/com.minogames.cats.client-2/lib/x86/" );
       #endif
    }
 
@@ -572,7 +572,7 @@ void *__hxcpp_get_proc_address(String inLib, String full_name,bool inNdllProc,bo
       // Try with lib name ...
       if (!registered)
       {
-         String libString = inLib + HX_CSTRING("_") + full_name;
+         String libString = inLib + "_" + full_name;
          registered = (*sgRegisteredPrims)[libString.__CStr()];
       }
 
@@ -599,7 +599,7 @@ void *__hxcpp_get_proc_address(String inLib, String full_name,bool inNdllProc,bo
    for(int e=0; module==0 && e<3; e++)
 #endif
    {
-      String extension = e==0 ? deviceExt : e==1 ? HX_CSTRING(".ndll") : HX_CSTRING("");
+      String extension = e==0 ? deviceExt : e==1 ? ".ndll" : "";
 
       for(int path=0;path<sgLibPath.size();path++)
       {
@@ -647,7 +647,7 @@ void *__hxcpp_get_proc_address(String inLib, String full_name,bool inNdllProc,bo
 
          if (haxelibPath.length!=0)
          {
-            String testPath  = haxelibPath + HX_CSTRING("/ndll/") + bin + HX_CSTRING("/") + inLib + extension;
+            String testPath  = haxelibPath + "/ndll/" + bin + "/" + inLib + extension;
             if (gLoadDebug)
                printf(" try %s...\n", testPath.__s);
             module = hxLoadLibrary(testPath);
@@ -662,7 +662,7 @@ void *__hxcpp_get_proc_address(String inLib, String full_name,bool inNdllProc,bo
 
    if (!module)
    {
-      hx::Throw(HX_CSTRING("Could not load module ") + inLib + HX_CSTRING("@") + full_name);
+      hx::Throw("Could not load module " + inLib + "@" + full_name);
    }
 
 
@@ -687,7 +687,7 @@ void *__hxcpp_get_proc_address(String inLib, String full_name,bool inNdllProc,bo
 
    FundFunc proc_query = (FundFunc)hxFindSymbol(module,full_name.__CStr());
    if (!proc_query)
-       proc_query = (FundFunc)hxFindSymbol(module, (inLib + HX_CSTRING("_") + full_name).__CStr());
+       proc_query = (FundFunc)hxFindSymbol(module, (inLib + "_" + full_name).__CStr());
 
    if (!proc_query && !inQuietFail)
    {
@@ -737,17 +737,17 @@ Dynamic __loadprim(String inLib, String inPrim,int inArgCount)
    String full_name = inPrim;
    switch(inArgCount)
    {
-      case 0: full_name += HX_CSTRING("__0"); break;
-      case 1: full_name += HX_CSTRING("__1"); break;
-      case 2: full_name += HX_CSTRING("__2"); break;
-      case 3: full_name += HX_CSTRING("__3"); break;
-      case 4: full_name += HX_CSTRING("__4"); break;
-      case 5: full_name += HX_CSTRING("__5"); break;
+      case 0: full_name += "__0"; break;
+      case 1: full_name += "__1"; break;
+      case 2: full_name += "__2"; break;
+      case 3: full_name += "__3"; break;
+      case 4: full_name += "__4"; break;
+      case 5: full_name += "__5"; break;
       default:
-          full_name += HX_CSTRING("__MULT");
+          full_name += "__MULT";
    }
 
-   String primName = inLib+HX_CSTRING("@")+full_name;
+   String primName = inLib+"@"+full_name;
    ExternalPrimitive *saved = sLoadedMap[primName];
    if (saved)
       return Dynamic(saved);
