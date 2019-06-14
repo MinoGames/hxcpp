@@ -301,20 +301,12 @@ public:
    static void ThrowBadFunctionError();
    inline void CheckFPtr() { if (!mPtr) ThrowBadFunctionError(); }
 
-   //inline  ::Dynamic operator()() { CheckFPtr(); return mPtr->__run(); }
-   //inline  ::Dynamic operator()(const Dynamic &inArg0) { CheckFPtr(); return mPtr->__run(inArg0); }
-   //inline  ::Dynamic operator()(const Dynamic &inArg0,const Dynamic &inArg1) { CheckFPtr(); return mPtr->__run(inArg0,inArg1); }
-   //inline  ::Dynamic operator()(const Dynamic &inArg0,const Dynamic &inArg1,const Dynamic &inArg2) { CheckFPtr(); return mPtr->__run(inArg0,inArg1,inArg2); }
-   //inline  ::Dynamic operator()(const Dynamic &inArg0,const Dynamic &inArg1,const Dynamic &inArg2,const Dynamic &inArg3) { CheckFPtr(); return mPtr->__run(inArg0,inArg1,inArg2,inArg3); }
-   //inline  ::Dynamic operator()(const Dynamic &inArg0,const Dynamic &inArg1,const Dynamic &inArg2,const Dynamic &inArg3,const Dynamic &inArg4) { CheckFPtr(); return mPtr->__run(inArg0,inArg1,inArg2,inArg3,inArg4); }
-
-   // We need to bring crash down, if we're already checking if the pointer is null and throwing an error, we can also just ignore it and return null, if it crashes it would've crash anyway
-   inline  ::Dynamic operator()() { if (!mPtr) return null(); else return mPtr->__run(); }
-   inline  ::Dynamic operator()(const Dynamic &inArg0) { if (!mPtr) return null(); else return mPtr->__run(inArg0); }
-   inline  ::Dynamic operator()(const Dynamic &inArg0,const Dynamic &inArg1) { if (!mPtr) return null(); else return mPtr->__run(inArg0,inArg1); }
-   inline  ::Dynamic operator()(const Dynamic &inArg0,const Dynamic &inArg1,const Dynamic &inArg2) { if (!mPtr) return null(); else return mPtr->__run(inArg0,inArg1,inArg2); }
-   inline  ::Dynamic operator()(const Dynamic &inArg0,const Dynamic &inArg1,const Dynamic &inArg2,const Dynamic &inArg3) { if (!mPtr) return null(); else return mPtr->__run(inArg0,inArg1,inArg2,inArg3); }
-   inline  ::Dynamic operator()(const Dynamic &inArg0,const Dynamic &inArg1,const Dynamic &inArg2,const Dynamic &inArg3,const Dynamic &inArg4) { if (!mPtr) return null(); else return mPtr->__run(inArg0,inArg1,inArg2,inArg3,inArg4); }
+   inline  ::Dynamic operator()() { CheckFPtr(); return mPtr->__run(); }
+   inline  ::Dynamic operator()(const Dynamic &inArg0) { CheckFPtr(); return mPtr->__run(inArg0); }
+   inline  ::Dynamic operator()(const Dynamic &inArg0,const Dynamic &inArg1) { CheckFPtr(); return mPtr->__run(inArg0,inArg1); }
+   inline  ::Dynamic operator()(const Dynamic &inArg0,const Dynamic &inArg1,const Dynamic &inArg2) { CheckFPtr(); return mPtr->__run(inArg0,inArg1,inArg2); }
+   inline  ::Dynamic operator()(const Dynamic &inArg0,const Dynamic &inArg1,const Dynamic &inArg2,const Dynamic &inArg3) { CheckFPtr(); return mPtr->__run(inArg0,inArg1,inArg2,inArg3); }
+   inline  ::Dynamic operator()(const Dynamic &inArg0,const Dynamic &inArg1,const Dynamic &inArg2,const Dynamic &inArg3,const Dynamic &inArg4) { CheckFPtr(); return mPtr->__run(inArg0,inArg1,inArg2,inArg3,inArg4); }
 
    HX_DECLARE_DYNAMIC_FUNCTIONS;
 
