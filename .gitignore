@@ -23,3 +23,5 @@ test/haxe/gc/big.txt
 *.exe
 *.pdb
 *.ilk
+
+.vscode

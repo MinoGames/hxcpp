@@ -19,8 +19,14 @@ import sys.net.UdpSocket;
 import sys.net.UdpSocket;
 import sys.io.Process;
 
+#if haxe4
+import sys.thread.Deque;
+import sys.thread.Thread;
+#else
 import cpp.vm.Deque;
 import cpp.vm.Thread;
+#end
+
 using cpp.NativeArray;
 using cpp.AtomicInt;
 
@@ -96,14 +102,24 @@ class Test
    public static function testDb(cnx:Connection) : Int
    {
       v("connected :" + cnx);
-      cnx.request("
-        CREATE TABLE IF NOT EXISTS User (
-            id INTEGER PRIMARY KEY AUTOINCREMENT, 
-            name TEXT, 
-            age INTEGER, 
-            money DOUBLE
-        )
-");
+      if (cnx.dbName() == "SQLite") {
+        cnx.request("
+          CREATE TABLE IF NOT EXISTS User (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              name TEXT,
+              age INTEGER,
+              money DOUBLE
+          )");
+      } else {
+        cnx.request("
+          CREATE TABLE IF NOT EXISTS User (
+              id INTEGER NOT NULL AUTO_INCREMENT,
+              name TEXT,
+              age INTEGER,
+              money DOUBLE,
+              PRIMARY KEY(id)
+          )");
+      }
       cnx.request("INSERT INTO User (name,age,money) VALUES ('John',32,100.45)");
       cnx.request("INSERT INTO User (name,age,money) VALUES ('Bob',14,4.50)");
 
@@ -232,10 +248,10 @@ class Test
          cnx = Mysql.connect({ 
             host : "localhost",
             port : 3306,
-            user : "root",
-            pass : "",
+            user : "hxcpp",
+            pass : "hxcpp",
             socket : null,
-            database : "MyBase"
+            database : "hxcpp"
         });
       }
       catch(e:Dynamic)
@@ -599,7 +615,7 @@ class Test
    static var socketClientRunning = true;
    public static function readOutput(proc:Process)
    {
-      cpp.vm.Thread.create( function() {
+      Thread.create( function() {
          while(true)
          {
             try
@@ -866,7 +882,7 @@ class Test
          exitCode |= testCompress();
          exitCode |= testRegexp();
          exitCode |= testSqlite();
-         //exitCode |= testMysql();
+         exitCode |= testMysql();
          exitCode |= testRandom();
          exitCode |= testFile();
          exitCode |= testFileSystem();

@@ -1,5 +1,9 @@
 import cpp.vm.Debugger;
+#if haxe4
+import sys.thread.Thread;
+#else
 import cpp.vm.Thread;
+#end
 
 typedef DebuggerContext = { className : String,
                             functionName : String,
@@ -25,7 +29,7 @@ class TestDebugger
    {
       Debugger.enableCurrentThreadDebugging(false);
       var mainThread = Thread.current();
-      cpp.vm.Thread.create( function() {
+      Thread.create( function() {
          startDebugger();
          mainThread.sendMessage("setup");
       });
