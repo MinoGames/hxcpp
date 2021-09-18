@@ -1395,8 +1395,9 @@ class BuildTool
    {
       try
       {
-         var json = Json.parse (sys.io.File.getContent (PathManager.getHaxelib ("hxcpp") + "/haxelib.json"));
-         return json.version;
+         return "4.2.1";
+         //var json = Json.parse (sys.io.File.getContent (PathManager.getHaxelib ("hxcpp") + "/haxelib.json"));
+         //return json.version;
       }
       catch (e:Dynamic)
       {
