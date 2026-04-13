@@ -33,6 +33,7 @@
 <path name="${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/${ANDROID_HOST}/bin" />
 
 <set name="HXCPP_AR" value="llvm-ar" />
+<set name="HXCPP_RANLIB" value="llvm-ranlib" />
 
 <include name="toolchain/gcc-toolchain.xml"/>
 
