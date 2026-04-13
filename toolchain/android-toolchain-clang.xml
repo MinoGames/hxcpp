@@ -3,7 +3,7 @@
 <!-- Set architecture -->
 <section if="HXCPP_X86">
   <set name="ARCH" value="-x86" />
-  <set name="PLATFORM_NUMBER" value="16" />
+  <set name="PLATFORM_NUMBER" value="21" />
   <set name="EXEPREFIX" value="i686-linux-android" />
 </section>
 
@@ -15,7 +15,7 @@
 
 <section if="HXCPP_ARMV7">
   <set name="ARCH" value="-v7" />
-  <set name="PLATFORM_NUMBER" value="16" />
+  <set name="PLATFORM_NUMBER" value="21" />
   <set name="EXEPREFIX" value="arm-linux-androideabi" />
 </section>
 
@@ -84,6 +84,7 @@
 
   <flag value ="-static-libstdc++" />
   <flag value ="-v" />
+  <flag value ="-Wl,--build-id=sha1" />
   <prefix value="lib"/>
   <lib name="-llog"/>
     

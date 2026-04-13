@@ -1883,7 +1883,7 @@ class BuildTool
          if (!defines.exists("ANDROID_HOST"))
          {
             if ( (new EReg("mac","i")).match(os) )
-               defines.set("ANDROID_HOST","darwin-x86");
+               defines.set("ANDROID_HOST","darwin-x86_64");
             else if ( (new EReg("window","i")).match(os) )
             {
                defines.set("windows_host","1");

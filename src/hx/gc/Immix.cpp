@@ -579,7 +579,7 @@ static ThreadPoolLock sThreadPoolLock;
 typedef pthread_cond_t ThreadPoolSignal;
 inline void WaitThreadLocked(ThreadPoolSignal &ioSignal)
 {
-   pthread_cond_wait(&ioSignal, &sThreadPoolLock.mMutex);
+   pthread_cond_wait(&ioSignal, sThreadPoolLock.mMutex);
 }
 #else
 typedef HxSemaphore ThreadPoolSignal;
@@ -7039,4 +7039,3 @@ unsigned int __hxcpp_obj_hash(Dynamic inObj)
 
 
 void DummyFunction(void *inPtr) { }
-
