@@ -157,6 +157,8 @@ int _hx_std_file_write( Dynamic handle, Array<unsigned char> s, int p, int n )
       int result = MultiByteToWideChar(CP_UTF8, 0, (char *)&s[p], len, buf, MAX_BUFFER_SIZE / 2);
       DWORD written = 0;
       if(!WriteConsoleW(win_handle, buf, result, &written, NULL)) {
+         // file_error leaves the GC-free zone itself
+         zone.locked = false;
          file_error("file_write", f->name);
       }
       if (written == result) {
@@ -192,6 +194,9 @@ int _hx_std_file_write( Dynamic handle, Array<unsigned char> s, int p, int n )
       if( d <= 0 )
       {
          HANDLE_FINTR(f->io,file_write_again);
+         // file_error leaves the GC-free zone itself. Without this, the zone's destructor
+         // leaves it a second time while the exception unwinds: "GCFree Zone mismatch" trap.
+         zone.locked = false;
          file_error("file_write",f->name);
       }
       p += d;
