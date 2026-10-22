@@ -49,4 +49,21 @@ class TestTypes extends Test
       Assert.equals(d.i6, 1);
       Assert.equals(d.i7, 1);
    }
+
+   // A double outside the int range is not an Int. The test must not depend on
+   // casting such a double to int, which is undefined behaviour in C++.
+   public function testIsIntRange()
+   {
+      var values:Array<Dynamic> = [ 1792627200000.0, 2147483648.0, -2147483649.0, 4294967296.0, 1e300, Math.NaN, Math.POSITIVE_INFINITY, Math.NEGATIVE_INFINITY, 1.5 ];
+      for(v in values)
+         Assert.isFalse( Std.isOfType(v, Int), 'Std.isOfType($v, Int)' );
+
+      var ints:Array<Dynamic> = [ 0.0, -1.0, 255.0, 256.0, 2147483647.0, -2147483648.0 ];
+      for(v in ints)
+         Assert.isTrue( Std.isOfType(v, Int), 'Std.isOfType($v, Int)' );
+
+      var big:Dynamic = 1792627200000.0;
+      Assert.isTrue( Std.isOfType(big, Float) );
+      Assert.equals( 1792627200000.0, (big:Float) );
+   }
 }

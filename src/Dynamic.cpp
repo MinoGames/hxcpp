@@ -409,7 +409,8 @@ Dynamic::Dynamic(char32_t inVal)
 
 Dynamic::Dynamic(double inVal)
 {
-   if ( (int)inVal==inVal && inVal>=-1 && inVal<256 )
+   // Test the range before the cast: casting a double outside the int range is undefined behaviour.
+   if ( inVal>=-1 && inVal<256 && (int)inVal==inVal )
    {
       int idx = inVal+1;
       mPtr = sConstDynamicInts[idx].mPtr;
@@ -599,7 +600,9 @@ static bool IsInt(hx::Object *inPtr)
       return false;
    }
    double val = d->__ToDouble();
-   return ((int)val == val);
+   // Test the range before the cast: casting a double outside the int range (or NaN) is
+   // undefined behaviour, and clang at -O2 then folds the test into "is a whole number".
+   return val >= -2147483648.0 && val <= 2147483647.0 && (int)val == val;
 }
 
 static Dynamic createEmptyInt64()
